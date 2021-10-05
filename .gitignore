@@ -1,0 +1,11 @@
+#VS19 Generated
+*.vcxproj
+*.filters
+*.user
+
+#x64
+/x64/*
+
+#Compiled Shaders
+*.frag
+*.vert
