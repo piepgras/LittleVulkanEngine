@@ -56,7 +56,7 @@ namespace lve {
         }
     }
 
-    void LveRenderer::freeCommandBuffers() {
+    void LveRenderer::freeCommandBuffers() { //freeCommandBuffers
         vkFreeCommandBuffers(
             lveDevice.device(),
             lveDevice.getCommandPool(),
