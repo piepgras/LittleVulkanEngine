@@ -7,7 +7,6 @@
 
 namespace lve {
 
-    //Constructor
     LveRenderer::LveRenderer(LveWindow& window, LveDevice& device)
         : lveWindow{ window }, lveDevice{ device } {
         recreateSwapChain();

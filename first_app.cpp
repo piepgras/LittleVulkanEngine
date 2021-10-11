@@ -136,7 +136,7 @@ namespace lve {
         // create some models
         std::shared_ptr<LveModel> squareModel = createSquareModel(
             lveDevice,
-            { .5f, .0f });  // offset model by .5 so rotation occurs at edge rather than center of square
+            { .5f, .0f });  //offset model by .5 so rotation occurs at edge rather than center of square
         std::shared_ptr<LveModel> circleModel = createCircleModel(lveDevice, 64);
 
         // create physics objects
