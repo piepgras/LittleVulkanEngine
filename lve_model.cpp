@@ -48,20 +48,21 @@ namespace lve {
 
 		return bindingDescriptions;
 	}
-
+	
 	std::vector<VkVertexInputAttributeDescription> LveModel::Vertex::getAttributeDescriptions() {
 		return {
-			{0, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, position)},
+			{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)},
 			{1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color)}
 		};
 	}
+
 	/* ALTERNATIVE TO THIS^^
 	std::vector<VkVertexInputAttributeDescription> LveModel::Vertex::getAttributeDescriptions() {
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(2);
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
-		attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attributeDescriptions[0].offset = offsetof(Vertex, position);
 
 		attributeDescriptions[1].binding = 0;
@@ -72,5 +73,4 @@ namespace lve {
 		return attributeDescriptions;
 	}
 	*/
-
 }
