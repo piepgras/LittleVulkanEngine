@@ -1,6 +1,7 @@
 #include "first_app.hpp"
 
 #include "simple_render_system.hpp"
+#include "lve_game_object.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -97,11 +98,29 @@ namespace lve {
 
     void FirstApp::loadGameObjects() {
         std::shared_ptr<LveModel> lveModel = createCubeModel(lveDevice, { .0f, .0f, .0f });
-        auto cube = LveGameObject::createGameObject();
-        cube.model = lveModel;
-        cube.transform.translation = { .0f, .0f, .5f };
-        cube.transform.scale = { .5f, .5f, .5f };
-        gameObjects.push_back(std::move(cube));
+        
+        const int numCubes = 25;
+
+        for (int i = 1; i <= numCubes; ++i) {
+
+            float random = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.2));
+
+            auto cube = LveGameObject::createGameObject();
+            cube.model = lveModel;
+            cube.transform.translation = { .0f, .0f, .0f };
+            cube.transform.scale = { random, random, random };
+
+            gameObjects.push_back(std::move(cube));
+        }
+
+       /* Single Cubes
+        auto cube1 = LveGameObject::createGameObject();
+        cube1.model = lveModel;
+        cube1.transform.translation = { .0f, .3f, .5f };
+        cube1.transform.scale = { .2f, .7f, .5f };
+
+       gameObjects.push_back(std::move(cube1));
+       */
     }
 
 }

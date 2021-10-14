@@ -47,6 +47,21 @@ namespace lve {
         }
     };
 
+    /* OLD 
+            glm::mat4 mat4() {
+            auto transform = glm::translate(glm::mat4{ 1.f }, translation);
+
+            transform = glm::rotate(transform, rotation.y, { 0.f, 1.f, 0.f });
+            transform = glm::rotate(transform, rotation.y, { 1.f, 0.f, 0.f });
+            transform = glm::rotate(transform, rotation.y, { 0.f, 0.f, 1.f });
+
+            transform = glm::scale(transform, scale);
+
+            return transform;
+        }
+    };
+    */
+
     struct RigidBody2d {
         glm::vec2 velocity;
         float mass{ 1.0f };
@@ -55,6 +70,10 @@ namespace lve {
     class LveGameObject {
     public:
         using id_t = unsigned int;
+
+        LveGameObject() {
+
+        }
 
         static LveGameObject createGameObject() {
             static id_t currentId = 0;

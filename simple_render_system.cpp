@@ -63,8 +63,13 @@ namespace lve {
     void SimpleRenderSystem::renderGameObjects(VkCommandBuffer commandBuffer, std::vector<LveGameObject> &gameObjects) {
         lvePipeline->bind(commandBuffer);
 
+        
+
         for (auto& obj : gameObjects) {
-            obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + 0.0001f, glm::two_pi<float>());
+            float random = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 0.001));
+            obj.transform.rotation.y = glm::mod(obj.transform.rotation.y + random, glm::two_pi<float>());
+            obj.transform.rotation.x = glm::mod(obj.transform.rotation.x + random, glm::two_pi<float>());
+            obj.transform.rotation.z = glm::mod(obj.transform.rotation.z + random, glm::two_pi<float>());
 
             SimplePushConstantData push{};
             push.color = obj.color;
