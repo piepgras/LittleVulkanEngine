@@ -19,7 +19,8 @@ namespace lve {
         uint32_t presentFamily;
         bool graphicsFamilyHasValue = false;
         bool presentFamilyHasValue = false;
-        bool isComplete() { return graphicsFamilyHasValue && presentFamilyHasValue; }
+        bool isComplete() { return graphicsFamilyHasValue
+                            && presentFamilyHasValue; }
     };
 
     class LveDevice {
@@ -45,11 +46,17 @@ namespace lve {
         VkQueue graphicsQueue() { return graphicsQueue_; }
         VkQueue presentQueue() { return presentQueue_; }
 
-        SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(physicalDevice); }
-        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-        QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(physicalDevice); }
+        SwapChainSupportDetails getSwapChainSupport() {
+            return querySwapChainSupport(physicalDevice); }
+        uint32_t findMemoryType(
+            uint32_t typeFilter,
+            VkMemoryPropertyFlags properties);
+        QueueFamilyIndices findPhysicalQueueFamilies() {
+            return findQueueFamilies(physicalDevice); }
         VkFormat findSupportedFormat(
-            const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+            const std::vector<VkFormat>& candidates,
+            VkImageTiling tiling,
+            VkFormatFeatureFlags features);
 
         // Buffer Helper Functions
         void createBuffer(
@@ -60,9 +67,13 @@ namespace lve {
             VkDeviceMemory& bufferMemory);
         VkCommandBuffer beginSingleTimeCommands();
         void endSingleTimeCommands(VkCommandBuffer commandBuffer);
-        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+        void copyBuffer(
+            VkBuffer srcBuffer,
+            VkBuffer dstBuffer,
+            VkDeviceSize size);
         void copyBufferToImage(
-            VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
+            VkBuffer buffer, VkImage image, uint32_t width,
+            uint32_t height, uint32_t layerCount);
 
         void createImageWithInfo(
             const VkImageCreateInfo& imageInfo,
@@ -85,7 +96,8 @@ namespace lve {
         std::vector<const char*> getRequiredExtensions();
         bool checkValidationLayerSupport();
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+        void populateDebugMessengerCreateInfo(
+            VkDebugUtilsMessengerCreateInfoEXT& createInfo);
         void hasGflwRequiredInstanceExtensions();
         bool checkDeviceExtensionSupport(VkPhysicalDevice device);
         SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
@@ -101,7 +113,9 @@ namespace lve {
         VkQueue graphicsQueue_;
         VkQueue presentQueue_;
 
-        const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-        const std::vector<const char*> deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+        const std::vector<const char*> validationLayers = {
+            "VK_LAYER_KHRONOS_validation" };
+        const std::vector<const char*> deviceExtensions = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME };
     };
 }

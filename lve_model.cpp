@@ -4,7 +4,9 @@
 #include <cstring>
 
 namespace lve {
-	LveModel::LveModel(LveDevice &device, const std::vector<Vertex> &vertices) : lveDevice{ device } {
+	LveModel::LveModel(
+		LveDevice &device,
+		const std::vector<Vertex> &vertices) : lveDevice{ device } {
 		createVertexBuffers(vertices);
 	}
 
@@ -20,13 +22,16 @@ namespace lve {
 		lveDevice.createBuffer(
 			bufferSize,
 			VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+			VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 			vertexBuffer,
 			vertexBufferMemory);
 
 		void *data;
-		vkMapMemory(lveDevice.device(), vertexBufferMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
+		vkMapMemory(
+			lveDevice.device(), vertexBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(
+			data, vertices.data(), static_cast<size_t>(bufferSize));
 		vkUnmapMemory(lveDevice.device(), vertexBufferMemory);
 	}
 
@@ -40,7 +45,8 @@ namespace lve {
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 	}
 
-	std::vector<VkVertexInputBindingDescription> LveModel::Vertex::getBindingDescriptions() {
+	std::vector<VkVertexInputBindingDescription>
+		LveModel::Vertex::getBindingDescriptions() {
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
 		bindingDescriptions[0].binding = 0;
 		bindingDescriptions[0].stride = sizeof(Vertex);
@@ -49,7 +55,8 @@ namespace lve {
 		return bindingDescriptions;
 	}
 	
-	std::vector<VkVertexInputAttributeDescription> LveModel::Vertex::getAttributeDescriptions() {
+	std::vector<VkVertexInputAttributeDescription>
+		LveModel::Vertex::getAttributeDescriptions() {
 		return {
 			{0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)},
 			{1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color)}
@@ -57,8 +64,10 @@ namespace lve {
 	}
 
 	/* ALTERNATIVE TO THIS^^
-	std::vector<VkVertexInputAttributeDescription> LveModel::Vertex::getAttributeDescriptions() {
-		std::vector<VkVertexInputAttributeDescription> attributeDescriptions(2);
+	std::vector<VkVertexInputAttributeDescription>
+	LveModel::Vertex::getAttributeDescriptions() {
+		std::vector<VkVertexInputAttributeDescription>
+		attributeDescriptions(2);
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;

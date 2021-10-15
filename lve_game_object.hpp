@@ -15,8 +15,8 @@ namespace lve {
         glm::vec3 scale{ 1.f, 1.f, 1.f };
         glm::vec3 rotation{};
 
-        // Matrix corresponds to translate * Ry * Rx * Rz * scale transformation
-        // Uses Tait-Bryan angles with axis order Y(1), X(2), Z(3).. for now.
+        //Matrix corresponds to translate * Ry * Rx * Rz * scale transformation
+        //Uses Tait-Bryan angles with axis order Y(1), X(2), Z(3).. for now.
         glm::mat4 mat4() {
             const float c3 = glm::cos(rotation.z);
             const float s3 = glm::sin(rotation.z);

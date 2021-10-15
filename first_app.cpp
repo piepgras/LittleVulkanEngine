@@ -1,7 +1,7 @@
 #include "first_app.hpp"
 
+#include "lve_camera.hpp"
 #include "simple_render_system.hpp"
-#include "lve_game_object.hpp"
 
 // libs
 #define GLM_FORCE_RADIANS
@@ -21,14 +21,28 @@ namespace lve {
     FirstApp::~FirstApp() {}
 
     void FirstApp::run() {
-        SimpleRenderSystem simpleRenderSystem{ lveDevice, lveRenderer.getSwapChainRenderPass() };
+        SimpleRenderSystem simpleRenderSystem{
+            lveDevice,
+            lveRenderer.getSwapChainRenderPass() };
+        LveCamera camera{};
+        
 
         while (!lveWindow.shouldClose()) {
             glfwPollEvents();
 
+            float aspect = lveRenderer.getAspectRatio();
+   // Orthographic projection:
+   // camera.setOrthographicProjection(-1, 1, -1 / aspect, 1 / aspect, -1, 1);
+            camera.setPerspectiveProjection(
+                glm::radians(50.f),
+                aspect, 0.1f, 10.f);
+
             if (auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
-                simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+                simpleRenderSystem.renderGameObjects(
+                    commandBuffer,
+                    gameObjects,
+                    camera);
                 lveRenderer.endSwapChainRenderPass(commandBuffer);
                 lveRenderer.endFrame();
             }
@@ -38,7 +52,9 @@ namespace lve {
     }
 
     // temporary helper function, creates a 1x1x1 cube centered at offset
-    std::unique_ptr<LveModel> createCubeModel(LveDevice& device, glm::vec3 offset) {
+    std::unique_ptr<LveModel> createCubeModel(
+        LveDevice& device,
+        glm::vec3 offset) {
         std::vector<LveModel::Vertex> vertices{
 
             // left face (white)
@@ -97,17 +113,21 @@ namespace lve {
     }
 
     void FirstApp::loadGameObjects() {
-        std::shared_ptr<LveModel> lveModel = createCubeModel(lveDevice, { .0f, .0f, .0f });
+        std::shared_ptr<LveModel> lveModel = createCubeModel(
+            lveDevice,
+            { .0f, .0f, .0f });
         
-        const int numCubes = 25;
+        const int numCubes = 1;
 
-        for (int i = 1; i <= numCubes; ++i) {
-
-            float random = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.2));
+        for (int i = 0; i <= numCubes; ++i) {
+            float random = 0.1f;
+            //playing around 
+            //float random = static_cast <float> (rand()) / 
+            //  (static_cast <float> (RAND_MAX / 1.2));
 
             auto cube = LveGameObject::createGameObject();
             cube.model = lveModel;
-            cube.transform.translation = { .0f, .0f, .0f };
+            cube.transform.translation = { .0f, .0f, 0.5f };
             cube.transform.scale = { random, random, random };
 
             gameObjects.push_back(std::move(cube));
