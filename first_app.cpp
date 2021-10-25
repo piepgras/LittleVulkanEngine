@@ -25,7 +25,9 @@ namespace lve {
             lveDevice,
             lveRenderer.getSwapChainRenderPass() };
         LveCamera camera{};
-        
+        //camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.f, 0.f, 1.f));
+        camera.setViewTarget(glm::vec3(-1.f, -2., 2.f),
+                             glm::vec3(0.f, 0.f, 25.f));
 
         while (!lveWindow.shouldClose()) {
             glfwPollEvents();
@@ -35,7 +37,7 @@ namespace lve {
    // camera.setOrthographicProjection(-1, 1, -1 / aspect, 1 / aspect, -1, 1);
             camera.setPerspectiveProjection(
                 glm::radians(50.f),
-                aspect, 0.1f, 10.f);
+                aspect, 0.1f, 100.f);
 
             if (auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
@@ -113,9 +115,8 @@ namespace lve {
     }
 
     void FirstApp::loadGameObjects() {
-        std::shared_ptr<LveModel> lveModel = createCubeModel(
-            lveDevice,
-            { .0f, .0f, .0f });
+        std::shared_ptr<LveModel> lveModel = createCubeModel(lveDevice,
+                                                            { .0f, .0f, .0f });
         
         const int numCubes = 1;
 
@@ -127,7 +128,7 @@ namespace lve {
 
             auto cube = LveGameObject::createGameObject();
             cube.model = lveModel;
-            cube.transform.translation = { .0f, .0f, 0.5f };
+            cube.transform.translation = { .0f, .0f, 25.f };
             cube.transform.scale = { random, random, random };
 
             gameObjects.push_back(std::move(cube));
