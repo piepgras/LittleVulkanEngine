@@ -1,5 +1,6 @@
 #include "first_app.hpp"
 
+#include "lve_keyboard.hpp"
 #include "lve_camera.hpp"
 #include "simple_render_system.hpp"
 
@@ -11,6 +12,7 @@
 
 // std
 #include <array>
+#include <chrono>
 #include <cassert>
 #include <stdexcept>
 
@@ -25,19 +27,34 @@ namespace lve {
             lveDevice,
             lveRenderer.getSwapChainRenderPass() };
         LveCamera camera{};
-        //camera.setViewDirection(glm::vec3(0.f), glm::vec3(0.f, 0.f, 1.f));
         camera.setViewTarget(glm::vec3(-1.f, -2., 2.f),
                              glm::vec3(0.f, 0.f, 25.f));
+
+        auto viewerObject = LveGameObject::createGameObject();
+        KeyboardMovementController cameraController{};
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
 
         while (!lveWindow.shouldClose()) {
             glfwPollEvents();
 
+            auto newTime = std::chrono::high_resolution_clock::now();
+
+            float frameTime =
+                std::chrono::duration<float,
+                std::chrono::seconds::period>(newTime - currentTime).count();
+
+            currentTime = newTime;
+
+            cameraController.moveInPlaneXZ(
+                lveWindow.getGLFWwindow(), frameTime, viewerObject);
+            camera.setViewYXZ(viewerObject.transform.translation,
+                viewerObject.transform.rotation);
+
             float aspect = lveRenderer.getAspectRatio();
-   // Orthographic projection:
-   // camera.setOrthographicProjection(-1, 1, -1 / aspect, 1 / aspect, -1, 1);
             camera.setPerspectiveProjection(
                 glm::radians(50.f),
-                aspect, 0.1f, 100.f);
+                aspect, 0.1f, 15.f);
 
             if (auto commandBuffer = lveRenderer.beginFrame()) {
                 lveRenderer.beginSwapChainRenderPass(commandBuffer);
@@ -121,27 +138,14 @@ namespace lve {
         const int numCubes = 1;
 
         for (int i = 0; i <= numCubes; ++i) {
-            float random = 0.1f;
-            //playing around 
-            //float random = static_cast <float> (rand()) / 
-            //  (static_cast <float> (RAND_MAX / 1.2));
+            float random = 1.f;
 
             auto cube = LveGameObject::createGameObject();
             cube.model = lveModel;
-            cube.transform.translation = { .0f, .0f, 25.f };
+            cube.transform.translation = { -1.0f, -2.f, 5.f };
             cube.transform.scale = { random, random, random };
 
             gameObjects.push_back(std::move(cube));
         }
-
-       /* Single Cubes
-        auto cube1 = LveGameObject::createGameObject();
-        cube1.model = lveModel;
-        cube1.transform.translation = { .0f, .3f, .5f };
-        cube1.transform.scale = { .2f, .7f, .5f };
-
-       gameObjects.push_back(std::move(cube1));
-       */
     }
-
 }
