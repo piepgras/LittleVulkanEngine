@@ -31,7 +31,10 @@ namespace lve {
     public:
         LvePipeline(
             LveDevice& device,
-            const std::string& vertFilepath,
+            const std::string& 
+            
+            
+            Filepath,
             const std::string& fragFilepath,
             const PipelineConfigInfo& configInfo);
         ~LvePipeline();

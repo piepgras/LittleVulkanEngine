@@ -2,6 +2,7 @@
 *.vcxproj
 *.filters
 *.user
+*.obj
 
 #x64
 /x64/*
