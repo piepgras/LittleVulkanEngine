@@ -9,9 +9,12 @@
 namespace lve {
 
     struct PipelineConfigInfo {
+        PipelineConfigInfo() = default;
         PipelineConfigInfo(const PipelineConfigInfo&) = delete;
         PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
 
+        std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
+        std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
         VkPipelineViewportStateCreateInfo viewportInfo;
         VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
         VkPipelineRasterizationStateCreateInfo rasterizationInfo;
@@ -19,11 +22,10 @@ namespace lve {
         VkPipelineColorBlendAttachmentState colorBlendAttachment;
         VkPipelineColorBlendStateCreateInfo colorBlendInfo;
         VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
-        VkPipelineLayout pipelineLayout = nullptr;
+        std::vector<VkDynamicState> dynamicStateEnables;
         VkPipelineDynamicStateCreateInfo dynamicStateInfo;
+        VkPipelineLayout pipelineLayout = nullptr;
         VkRenderPass renderPass = nullptr;
-        std::vector<VkDynamicState> dynamicStateEnable;
-
         uint32_t subpass = 0;
     };
 
@@ -31,10 +33,7 @@ namespace lve {
     public:
         LvePipeline(
             LveDevice& device,
-            const std::string& 
-            
-            
-            Filepath,
+            const std::string& vertFilepath,
             const std::string& fragFilepath,
             const PipelineConfigInfo& configInfo);
         ~LvePipeline();
@@ -54,9 +53,7 @@ namespace lve {
             const std::string& fragFilepath,
             const PipelineConfigInfo& configInfo);
 
-        void createShaderModule(
-            const std::vector<char>& code,
-            VkShaderModule* shaderModule);
+        void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 
         LveDevice& lveDevice;
         VkPipeline graphicsPipeline;

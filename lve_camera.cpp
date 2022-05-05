@@ -1,6 +1,6 @@
 #include "lve_camera.hpp"
 
-//std
+// std
 #include <cassert>
 #include <limits>
 

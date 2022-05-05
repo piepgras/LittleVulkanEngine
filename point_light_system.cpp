@@ -1,4 +1,4 @@
-#include "simple_render_system.hpp"
+#include "point_light_system.hpp"
 
 //libs
 #define GLM_FORCE_RADIANS
@@ -12,28 +12,23 @@
 
 namespace lve {
 
-    struct SimplePushConstantData {
-        glm::mat4 modelMatrix{ 1.f };
-        glm::mat4 normalMatrix{ 1.f };
-    };
-
-    SimpleRenderSystem::SimpleRenderSystem(
+    PointLightSystem::PointLightSystem(
         LveDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout) : lveDevice{ device } {
 
         createPipelineLayout(globalSetLayout);
         createPipeline(renderPass);
     }
 
-    SimpleRenderSystem::~SimpleRenderSystem() {
+    PointLightSystem::~PointLightSystem() {
         vkDestroyPipelineLayout(lveDevice.device(), pipelineLayout, nullptr);
     }
 
-    void SimpleRenderSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
-        VkPushConstantRange pushConstantRange{};
-        pushConstantRange.stageFlags =
-            VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-        pushConstantRange.offset = 0;
-        pushConstantRange.size = sizeof(SimplePushConstantData);
+    void PointLightSystem::createPipelineLayout(VkDescriptorSetLayout globalSetLayout) {
+     //    VkPushConstantRange pushConstantRange{};
+     //   pushConstantRange.stageFlags =
+     //       VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+     //   pushConstantRange.offset = 0;
+     //   pushConstantRange.size = sizeof(SimplePushConstantData);
 
         std::vector<VkDescriptorSetLayout> descriptorSetLayouts{ globalSetLayout };
 
@@ -42,8 +37,8 @@ namespace lve {
             VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
         pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
-        pipelineLayoutInfo.pushConstantRangeCount = 1;
-        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+        pipelineLayoutInfo.pushConstantRangeCount = 0;
+        pipelineLayoutInfo.pPushConstantRanges = nullptr;
         if (vkCreatePipelineLayout(
             lveDevice.device(), &pipelineLayoutInfo,
             nullptr, &pipelineLayout) !=
@@ -52,23 +47,26 @@ namespace lve {
         }
     }
 
-    void SimpleRenderSystem::createPipeline(VkRenderPass renderPass) {
+    void PointLightSystem::createPipeline(VkRenderPass renderPass) {
         assert(pipelineLayout != nullptr &&
             "Cannot create pipeline before pipeline layout");
 
         PipelineConfigInfo pipelineConfig{};
-        LvePipeline::defaultPipelineConfigInfo(pipelineConfig),
+        LvePipeline::defaultPipelineConfigInfo(pipelineConfig);
+        pipelineConfig.attributeDescriptions.clear();
+        pipelineConfig.bindingDescriptions.clear();
         pipelineConfig.renderPass = renderPass;
         pipelineConfig.pipelineLayout = pipelineLayout;
+
         lvePipeline = std::make_unique<LvePipeline>(
             lveDevice,
-            "simple_shader.vert.spv",
-            "simple_shader.frag.spv",
+            "point_light.vert.spv",
+            "point_light.frag.spv",
             pipelineConfig);
     }
 
-    void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo){
-        
+    void PointLightSystem::render(FrameInfo& frameInfo) {
+
         lvePipeline->bind(frameInfo.commandBuffer);
 
         vkCmdBindDescriptorSets(
@@ -82,24 +80,6 @@ namespace lve {
             nullptr
         );
 
-        for (auto& keyValue : frameInfo.gameObjects) {
-            auto& obj = keyValue.second;
-
-            if (obj.model == nullptr) continue;
-
-            SimplePushConstantData push{};
-            push.modelMatrix = obj.transform.mat4();
-            push.normalMatrix = obj.transform.normalMatrix();
-
-            vkCmdPushConstants(
-                frameInfo.commandBuffer,
-                pipelineLayout,
-                VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(SimplePushConstantData),
-                &push);
-            obj.model->bind(frameInfo.commandBuffer);
-            obj.model->draw(frameInfo.commandBuffer);
-        }
+        vkCmdDraw(frameInfo.commandBuffer, 6, 1, 0, 0);
     }
 }

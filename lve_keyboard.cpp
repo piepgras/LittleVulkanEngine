@@ -8,10 +8,12 @@ namespace lve {
 
 		glm::vec3 rotate{ 0 };
 
-		if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 1.f;
-		if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 1.f;
-		if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 1.f;
-		if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 1.f;
+		if (glfwGetKey(window, keys.lookUp) == GLFW_PRESS) rotate.x += 10.f;
+		if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) rotate.x -= 10.f;
+		if (glfwGetKey(window, keys.lookLeft) == GLFW_PRESS) rotate.y -= 10.f;
+		if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) rotate.y += 10.f;
+		if (glfwGetKey(window, keys.rotateLeft) == GLFW_PRESS) rotate.z += 10.f;
+		if (glfwGetKey(window, keys.rotateRight) == GLFW_PRESS) rotate.z -= 10.f;
 
 		//To avoid zero
 		if (glm::dot(rotate, rotate) > std::numeric_limits<float>::epsilon()) {
@@ -28,6 +30,7 @@ namespace lve {
 		const glm::vec3 forwardDir{ sin(yaw), 0.f, cos(yaw) };
 		const glm::vec3 rightDir{ forwardDir.z, 0.f, -forwardDir.x };
 		const glm::vec3 upDir{ 0.f, -1.f, 0.f };
+		const glm::vec3 rotateDir{ 0.f, 0.f, 0.f };
 
 		glm::vec3 moveDir{ 0.f };
 
@@ -43,6 +46,10 @@ namespace lve {
 			moveDir += upDir;
 		if (glfwGetKey(window, keys.moveDown) == GLFW_PRESS)
 			moveDir -= upDir;
+		if (glfwGetKey(window, keys.rotateLeft) == GLFW_PRESS)
+			moveDir += rotateDir;
+		if (glfwGetKey(window, keys.rotateRight) == GLFW_PRESS)
+			moveDir -= rotateDir;
 
 		if (glm::dot(moveDir, moveDir) > std::numeric_limits<float>::epsilon()) {
 			gameObject.transform.translation +=
